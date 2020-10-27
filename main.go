@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,6 +36,7 @@ func AddListItem(c *gin.Context) {
 func main() {
 	todos = append(todos, "Write the application")
 	r := gin.Default()
+	r.Use(static.Serve("/", static.LocalFile("./todo-vue/dist", false)))
 	r.GET("/api/lists", Lists)
 	r.GET("/api/lists/:index", ListItem)
 	r.POST("/api/lists", AddListItem)
