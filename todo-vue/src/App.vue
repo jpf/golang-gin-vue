@@ -65,7 +65,7 @@ function customLogin() {
       redirectUri: window.location.origin + '/login/callback'
     }).then(response => {
       this.token = response.tokens.accessToken.accessToken;
-      alert('Token:' + JSON.stringify(this.token));
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token;
     })
   })
 }
