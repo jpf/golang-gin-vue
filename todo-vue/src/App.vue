@@ -13,6 +13,7 @@
     <ul>
       <li v-for="item in todolist" v-bind:key="item">{{item}}</li>
     </ul>
+    <div>{{message}}</div>
   </div>
 </template>
 
@@ -21,7 +22,8 @@ import axios from "axios";
 import { OktaAuth } from '@okta/okta-auth-js'
 const appData = {
   todolist: ["More to do"],
-  token: ''
+  token: '',
+  message: ''
 }
 export default {
   name: 'App',
@@ -47,8 +49,13 @@ function getList() {
 async function sendItem() {
   const params = new URLSearchParams();
   params.append('item', this.todoitem);
-  await axios.post("/api/lists", params);
-  getList()
+  await axios.post("/api/lists", params)
+  .then(function() {
+    getList();
+  })
+  .catch(function (error) {
+    appData.todolist = [ error.message ];
+  })
 }
 
 function customLogin() {
@@ -66,6 +73,7 @@ function customLogin() {
     }).then(response => {
       this.token = response.tokens.accessToken.accessToken;
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token;
+      appData.message = this.token;
     })
   })
 }
